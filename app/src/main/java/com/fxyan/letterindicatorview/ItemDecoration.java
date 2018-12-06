@@ -67,25 +67,18 @@ public final class ItemDecoration extends RecyclerView.ItemDecoration {
             }
         }
 
+        float top = 0;
         if (array.indexOfKey(secondVisibleViewIndex) >= 0
                 && firstVisibleView.getBottom() <= dp30) {
             // 第一个可见的控件是该组最后一个控件
-            paint.setColor(Color.parseColor("#f5f5f5"));
-            float top = firstVisibleView.getBottom() - dp30;
-            c.drawRect(0, top, parent.getWidth(), top + dp30, paint);
-            float xOffset = dp12;
-            float yOffset = top + dp30 / 2 + fontMetrics.descent;
-            paint.setColor(Color.parseColor("#646464"));
-            c.drawText(tmp, xOffset, yOffset, paint);
-        } else {
-            paint.setColor(Color.parseColor("#f5f5f5"));
-            float top = 0;
-            c.drawRect(0, top, parent.getWidth(), top + dp30, paint);
-            float xOffset = dp12;
-            float yOffset = top + dp30 / 2 + fontMetrics.descent;
-            paint.setColor(Color.parseColor("#646464"));
-            c.drawText(tmp, xOffset, yOffset, paint);
+            top = firstVisibleView.getBottom() - dp30;
         }
+        paint.setColor(Color.parseColor("#f5f5f5"));
+        c.drawRect(0, top, parent.getWidth(), top + dp30, paint);
+        float xOffset = dp12;
+        float yOffset = top + dp30 / 2 + fontMetrics.descent;
+        paint.setColor(Color.parseColor("#646464"));
+        c.drawText(tmp, xOffset, yOffset, paint);
     }
 
     @Override
