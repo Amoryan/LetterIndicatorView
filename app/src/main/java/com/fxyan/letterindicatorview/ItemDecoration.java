@@ -42,7 +42,24 @@ public final class ItemDecoration extends RecyclerView.ItemDecoration {
                 String tmp = array.get(position);
                 float xOffset = dp12;
                 float yOffset = child.getTop() - dp30 / 2 + fontMetrics.descent;
-                paint.setColor(Color.parseColor("#646464"));
+
+                View firstVisibleView = parent.getChildAt(0);
+                View secondVisibleView = parent.getChildAt(1);
+                int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
+                int currentR = 0x64;
+                int currentG = 0x64;
+                int currentB = 0x64;
+                if (array.indexOfKey(secondVisibleViewIndex) >= 0
+                        && firstVisibleView.getBottom() <= dp30) {
+                    int endR = 0x1b;
+                    int endG = 0x8f;
+                    int endB = 0xe6;
+                    float percent = (dp30 - firstVisibleView.getBottom()) / dp30;
+                    currentR = (int) (currentR + (endR - currentR) * percent);
+                    currentG = (int) (currentG + (endG - currentG) * percent);
+                    currentB = (int) (currentB + (endB - currentB) * percent);
+                }
+                paint.setColor(Color.rgb(currentR, currentG, currentB));
                 c.drawText(tmp, xOffset, yOffset, paint);
             }
         }
@@ -68,16 +85,29 @@ public final class ItemDecoration extends RecyclerView.ItemDecoration {
         }
 
         float top = 0;
+        int currentR = 0x1b;
+        int currentG = 0x8f;
+        int currentB = 0xe6;
         if (array.indexOfKey(secondVisibleViewIndex) >= 0
                 && firstVisibleView.getBottom() <= dp30) {
             // 第一个可见的控件是该组最后一个控件
             top = firstVisibleView.getBottom() - dp30;
+
+            int endR = 0x64;
+            int endG = 0x64;
+            int endB = 0x64;
+
+            currentR = (int) (currentR - (currentR - endR) * (Math.abs(top) / dp30));
+            currentG = (int) (currentG - (currentG - endG) * (Math.abs(top) / dp30));
+            currentB = (int) (currentB - (currentB - endB) * (Math.abs(top) / dp30));
         }
         paint.setColor(Color.parseColor("#f5f5f5"));
         c.drawRect(0, top, parent.getWidth(), top + dp30, paint);
         float xOffset = dp12;
         float yOffset = top + dp30 / 2 + fontMetrics.descent;
-        paint.setColor(Color.parseColor("#646464"));
+
+        int color = Color.rgb(currentR, currentG, currentB);
+        paint.setColor(color);
         c.drawText(tmp, xOffset, yOffset, paint);
     }
 
