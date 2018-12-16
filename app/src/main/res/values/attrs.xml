@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LetterIndicatorView">
+        <attr name="livBackgroundColor" format="color|reference" />
+
+        <attr name="livItemWidth" format="dimension|reference" />
+        <attr name="livItemHeight" format="dimension|reference" />
+
+        <attr name="livTextSize" format="dimension|reference" />
+        <attr name="livSelectedTextColor" format="color|reference" />
+        <attr name="livSelectedTextBorderColor" format="color|reference" />
+        <attr name="livSelectedTextBorderRadius" format="dimension|reference" />
+        <attr name="livUnSelectTextColor" format="color|reference" />
+    </declare-styleable>
+</resources>

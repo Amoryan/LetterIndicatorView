@@ -14,23 +14,45 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private LetterIndicatorView indicatorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView);
+        indicatorView = findViewById(R.id.indicatorView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        SparseArray<String> array = new SparseArray<>();
-        recyclerView.addItemDecoration(new ItemDecoration(this, array));
+        final LinearLayoutManager lm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(lm);
+        final SparseArray<String> array = new SparseArray<>();
+        ItemDecoration itemDecoration = new ItemDecoration(this, array);
+        recyclerView.addItemDecoration(itemDecoration);
         Adapter adapter = new Adapter(this);
         recyclerView.setAdapter(adapter);
 
+        indicatorView.setOnTitleIndexChangeListener(new LetterIndicatorView.OnTitleIndexChangeListener() {
+            @Override
+            public void onTitleIndexChanged(int index) {
+                if (index >= 0) {
+                    lm.scrollToPositionWithOffset(array.keyAt(index), 0);
+                }
+            }
+        });
+        itemDecoration.setOnTitleIndexChangeListener(new ItemDecoration.OnTitleIndexChangeListener() {
+            @Override
+            public void onTitleIndexChanged(int index) {
+                indicatorView.setCurrent(index);
+            }
+        });
+
+        ArrayList<String> titles = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : getTestData().entrySet()) {
+            titles.add(entry.getKey());
             array.put(adapter.data.size(), entry.getKey());
             adapter.data.addAll(entry.getValue());
         }
+        indicatorView.setTitles(titles);
         adapter.notifyDataSetChanged();
     }
 
