@@ -25,6 +25,8 @@
         app:livSelectedTextBorderRadius="10dp"
         app:livSelectedTextColor="@android:color/white"
         app:livTextSize="14sp"
-        app:livUnSelectTextColor="#646464" />
+        app:livUnSelectTextColor="#646464"
+        app:livZoomTextColor="@android:color/white"
+        app:livZoomTextSize="20sp" />
 
 </FrameLayout>

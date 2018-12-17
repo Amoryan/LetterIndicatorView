@@ -11,5 +11,8 @@
         <attr name="livSelectedTextBorderColor" format="color|reference" />
         <attr name="livSelectedTextBorderRadius" format="dimension|reference" />
         <attr name="livUnSelectTextColor" format="color|reference" />
+
+        <attr name="livZoomTextSize" format="dimension|reference" />
+        <attr name="livZoomTextColor" format="color|reference" />
     </declare-styleable>
 </resources>

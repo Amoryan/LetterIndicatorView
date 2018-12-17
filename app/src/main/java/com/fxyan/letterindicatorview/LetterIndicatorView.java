@@ -2,6 +2,8 @@ package com.fxyan.letterindicatorview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -34,6 +36,11 @@ public final class LetterIndicatorView extends View {
     private int unSelectTextColor;
 
     private float zoomTextSize;
+    private int zoomTextColor;
+
+    private Bitmap zoomTextBg;
+    private Rect zoomTextBgSrc;
+    private Rect zoomTextBgDst;
 
     private Paint paint;
     private Path path;
@@ -41,6 +48,7 @@ public final class LetterIndicatorView extends View {
     private ArrayList<String> titles;
     private boolean isInTouchMode;
     private int current;
+    private float zoomTextY;
     private OnTitleIndexChangeListener onTitleIndexChangeListener;
 
     public LetterIndicatorView(Context context) {
@@ -69,6 +77,9 @@ public final class LetterIndicatorView extends View {
             selectedTextBorderRadius = array.getDimension(R.styleable.LetterIndicatorView_livSelectedTextBorderRadius, selectedTextBorderRadius);
             unSelectTextColor = array.getColor(R.styleable.LetterIndicatorView_livUnSelectTextColor, unSelectTextColor);
 
+            zoomTextSize = array.getDimension(R.styleable.LetterIndicatorView_livZoomTextSize, zoomTextSize);
+            zoomTextColor = array.getColor(R.styleable.LetterIndicatorView_livZoomTextColor, zoomTextColor);
+
             array.recycle();
         }
 
@@ -84,8 +95,8 @@ public final class LetterIndicatorView extends View {
     }
 
     public void setCurrent(int index) {
-        current = index;
-        invalidate();
+//        current = index;
+//        invalidate();
     }
 
     public void setOnTitleIndexChangeListener(OnTitleIndexChangeListener listener) {
@@ -106,28 +117,58 @@ public final class LetterIndicatorView extends View {
         selectedTextBorderColor = Color.TRANSPARENT;
         selectedTextBorderRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
         unSelectTextColor = Color.parseColor("#646464");
+
+        zoomTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+        zoomTextColor = Color.WHITE;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                isInTouchMode = true;
+                float x = event.getX();
+                if (x >= getWidth() - itemWidth) {
+                    isInTouchMode = true;
+                }
             case MotionEvent.ACTION_MOVE:
-                float y = event.getY();
-                calculateYIndex(y);
-                if (onTitleIndexChangeListener != null) {
-                    onTitleIndexChangeListener.onTitleIndexChanged(current);
+                if (isInTouchMode) {
+                    float y = event.getY();
+                    calculateYIndex(y);
+                    if (onTitleIndexChangeListener != null) {
+                        onTitleIndexChangeListener.onTitleIndexChanged(current);
+                    }
+                    invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                invalidate();
                 isInTouchMode = false;
                 break;
             default:
         }
-        invalidate();
-        return true;
+        if (isInTouchMode) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        zoomTextBg = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.ic_zoom_text_bg);
+        zoomTextBgSrc = new Rect();
+        zoomTextBgSrc.set(0, 0, zoomTextBg.getWidth(), zoomTextBg.getHeight());
+        zoomTextBgDst = new Rect();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (zoomTextBg != null) {
+            zoomTextBg.recycle();
+            zoomTextBg = null;
+        }
     }
 
     private void calculateYIndex(float y) {
@@ -139,6 +180,14 @@ public final class LetterIndicatorView extends View {
         if (current >= titles.size()) {
             current = titles.size() - 1;
         }
+        zoomTextY = y;
+        if (zoomTextY < firstItemTop + itemHeight / 2) {
+            zoomTextY = firstItemTop + itemHeight / 2;
+        }
+        float lastItemBottom = firstItemTop + getTotalItemHeight();
+        if (zoomTextY > lastItemBottom - itemHeight / 2) {
+            zoomTextY = lastItemBottom - itemHeight / 2;
+        }
     }
 
     @Override
@@ -146,7 +195,7 @@ public final class LetterIndicatorView extends View {
         int wMode = MeasureSpec.getMode(widthMeasureSpec);
         int wSize = MeasureSpec.getSize(widthMeasureSpec);
         if (wMode == MeasureSpec.AT_MOST) {
-            wSize = (int) Math.floor(itemWidth + 0.5);
+            wSize = (int) Math.floor(itemWidth + zoomTextBg.getWidth() + 0.5);
         }
 
         int hMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -199,14 +248,28 @@ public final class LetterIndicatorView extends View {
             String title = titles.get(i);
             paint.getTextBounds(title, 0, title.length(), textBounds);
             float xOffset = left + (itemWidth - textBounds.width()) / 2;
-            float yOffset = top + itemHeight / 2 + fontMetrics.descent;
+            float yOffset = top + itemHeight / 2 - fontMetrics.ascent / 2 - fontMetrics.descent / 2;
             canvas.drawText(title, xOffset, yOffset, paint);
         }
     }
 
     public void drawZoomText(Canvas canvas) {
         if (isInTouchMode) {
-            // TODO
+            // bg
+            float centerY = (getHeight() - getTotalItemHeight()) / 2 + itemHeight * current + itemHeight / 2;
+            zoomTextBgDst.left = 0;
+            zoomTextBgDst.top = (int) (zoomTextY - zoomTextBg.getHeight() / 2);
+            zoomTextBgDst.right = zoomTextBgDst.left + zoomTextBg.getWidth();
+            zoomTextBgDst.bottom = zoomTextBgDst.top + zoomTextBg.getHeight();
+            canvas.drawBitmap(zoomTextBg, zoomTextBgSrc, zoomTextBgDst, paint);
+            // text
+            paint.setColor(zoomTextColor);
+            paint.setTextSize(zoomTextSize);
+            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+            String tmp = titles.get(current);
+            float xOffset = zoomTextBg.getWidth() / 4;
+            float yOffset = zoomTextY - fontMetrics.ascent / 2 - fontMetrics.descent / 2;
+            canvas.drawText(tmp, xOffset, yOffset, paint);
         }
     }
 
