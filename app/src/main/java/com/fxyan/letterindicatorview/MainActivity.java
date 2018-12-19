@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         itemDecoration.setOnTitleIndexChangeListener(new ItemDecoration.OnTitleIndexChangeListener() {
             @Override
             public void onTitleIndexChanged(int index) {
-                indicatorView.setCurrent(index);
+                indicatorView.setOutChangeIndex(index);
             }
         });
 

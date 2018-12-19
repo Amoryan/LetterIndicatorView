@@ -46,8 +46,9 @@ public final class LetterIndicatorView extends View {
     private Path path;
     private Rect textBounds;
     private ArrayList<String> titles;
-    private boolean isInTouchMode;
-    private int current;
+    private boolean isOnTouchMode;
+    private int onTouchIndex;//触碰改变的索引
+    private int outChangeIndex;//外部联动改变的索引
     private float zoomTextY;
     private OnTitleIndexChangeListener onTitleIndexChangeListener;
 
@@ -94,9 +95,12 @@ public final class LetterIndicatorView extends View {
         this.titles.addAll(titles);
     }
 
-    public void setCurrent(int index) {
-//        current = index;
-//        invalidate();
+    public void setOutChangeIndex(int index) {
+        outChangeIndex = index;
+        if (!isOnTouchMode) {
+            onTouchIndex = outChangeIndex;
+            invalidate();
+        }
     }
 
     public void setOnTitleIndexChangeListener(OnTitleIndexChangeListener listener) {
@@ -128,26 +132,27 @@ public final class LetterIndicatorView extends View {
             case MotionEvent.ACTION_DOWN:
                 float x = event.getX();
                 if (x >= getWidth() - itemWidth) {
-                    isInTouchMode = true;
+                    isOnTouchMode = true;
                 }
             case MotionEvent.ACTION_MOVE:
-                if (isInTouchMode) {
+                if (isOnTouchMode) {
                     float y = event.getY();
-                    calculateYIndex(y);
+                    calculateOnTouchIndex(y);
                     if (onTitleIndexChangeListener != null) {
-                        onTitleIndexChangeListener.onTitleIndexChanged(current);
+                        onTitleIndexChangeListener.onTitleIndexChanged(onTouchIndex);
                     }
                     invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                onTouchIndex = outChangeIndex;
                 invalidate();
-                isInTouchMode = false;
+                isOnTouchMode = false;
                 break;
             default:
         }
-        if (isInTouchMode) {
+        if (isOnTouchMode) {
             return true;
         }
         return super.onTouchEvent(event);
@@ -171,15 +176,17 @@ public final class LetterIndicatorView extends View {
         }
     }
 
-    private void calculateYIndex(float y) {
+    private void calculateOnTouchIndex(float y) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
-        current = (int) ((y - firstItemTop) / itemHeight);
-        if (current < 0) {
-            current = 0;
+        onTouchIndex = (int) ((y - firstItemTop) / itemHeight);
+        if (onTouchIndex < 0) {
+            onTouchIndex = 0;
         }
-        if (current >= titles.size()) {
-            current = titles.size() - 1;
+        if (onTouchIndex >= titles.size()) {
+            onTouchIndex = titles.size() - 1;
         }
+        outChangeIndex = onTouchIndex;
+
         zoomTextY = y;
         if (zoomTextY < firstItemTop + itemHeight / 2) {
             zoomTextY = firstItemTop + itemHeight / 2;
@@ -231,7 +238,7 @@ public final class LetterIndicatorView extends View {
             float right = getWidth();
             float bottom = top + itemHeight;
 
-            if (i == current) {
+            if (i == onTouchIndex) {
                 paint.setColor(selectedTextBorderColor);
                 float centerX = (left + right) / 2;
                 float centerY = (top + bottom) / 2;
@@ -254,9 +261,8 @@ public final class LetterIndicatorView extends View {
     }
 
     public void drawZoomText(Canvas canvas) {
-        if (isInTouchMode) {
+        if (isOnTouchMode) {
             // bg
-            float centerY = (getHeight() - getTotalItemHeight()) / 2 + itemHeight * current + itemHeight / 2;
             zoomTextBgDst.left = 0;
             zoomTextBgDst.top = (int) (zoomTextY - zoomTextBg.getHeight() / 2);
             zoomTextBgDst.right = zoomTextBgDst.left + zoomTextBg.getWidth();
@@ -266,7 +272,7 @@ public final class LetterIndicatorView extends View {
             paint.setColor(zoomTextColor);
             paint.setTextSize(zoomTextSize);
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-            String tmp = titles.get(current);
+            String tmp = titles.get(onTouchIndex);
             float xOffset = zoomTextBg.getWidth() / 4;
             float yOffset = zoomTextY - fontMetrics.ascent / 2 - fontMetrics.descent / 2;
             canvas.drawText(tmp, xOffset, yOffset, paint);
