@@ -1,13 +1,13 @@
 package com.fxyan.letterindicatorview;
 
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
         Adapter adapter = new Adapter(this);
         recyclerView.setAdapter(adapter);
 
-        indicatorView.setOnTitleIndexChangeListener(new LetterIndicatorView.OnTitleIndexChangeListener() {
+        indicatorView.setOnIndicatorIndexChangeListener(new LetterIndicatorView.OnIndicatorIndexChangeListener() {
             @Override
-            public void onTitleIndexChanged(int index) {
+            public void onIndicatorIndexChanged(int index) {
                 if (index >= 0) {
                     lm.scrollToPositionWithOffset(array.keyAt(index), 0);
                 }
@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
             array.put(adapter.data.size(), entry.getKey());
             adapter.data.addAll(entry.getValue());
         }
-        indicatorView.setTitles(titles);
+        indicatorView.setIndicators(titles);
         adapter.notifyDataSetChanged();
     }
 
     private Map<String, List<String>> getTestData() {
         String[] prefixs = {"A", "B", "E", "F", "G", "M", "N", "P", "R", "T", "W", "X", "Z"};
-        Map<String, List<String>> map = new HashMap<>();
+        Map<String, List<String>> map = new ArrayMap<>();
 
         for (String prefix : prefixs) {
             List<String> list = new ArrayList<>();

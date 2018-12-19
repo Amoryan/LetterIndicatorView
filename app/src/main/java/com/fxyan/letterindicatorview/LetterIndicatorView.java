@@ -38,7 +38,7 @@ public final class LetterIndicatorView extends View {
     private float zoomUpIndicatorBgRadius;
     private float zoomUpIndicatorMargin;
 
-    private ArrayList<String> titles;
+    private ArrayList<String> indicators;
 
     private Paint paint;
     private Rect textBounds;
@@ -50,7 +50,7 @@ public final class LetterIndicatorView extends View {
 
     private int onTouchIndex;
     private int outChangeIndex;
-    private OnTitleIndexChangeListener onTitleIndexChangeListener;
+    private OnIndicatorIndexChangeListener onIndicatorIndexChangeListener;
 
     public LetterIndicatorView(Context context) {
         super(context);
@@ -66,7 +66,7 @@ public final class LetterIndicatorView extends View {
         configDefaultAttrs();
         loadXmlAttrs(attrs);
 
-        titles = new ArrayList<>();
+        indicators = new ArrayList<>();
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textBounds = new Rect();
@@ -143,9 +143,9 @@ public final class LetterIndicatorView extends View {
         }
     }
 
-    public void setTitles(ArrayList<String> titles) {
-        this.titles.clear();
-        this.titles.addAll(titles);
+    public void setIndicators(ArrayList<String> indicators) {
+        this.indicators.clear();
+        this.indicators.addAll(indicators);
     }
 
     public void setOutChangeIndex(int index) {
@@ -156,8 +156,8 @@ public final class LetterIndicatorView extends View {
         }
     }
 
-    public void setOnTitleIndexChangeListener(OnTitleIndexChangeListener listener) {
-        onTitleIndexChangeListener = listener;
+    public void setOnIndicatorIndexChangeListener(OnIndicatorIndexChangeListener listener) {
+        onIndicatorIndexChangeListener = listener;
     }
 
     @Override
@@ -172,8 +172,8 @@ public final class LetterIndicatorView extends View {
                 if (isOnTouchMode) {
                     float y = event.getY();
                     calculateOnTouchIndex(y);
-                    if (onTitleIndexChangeListener != null) {
-                        onTitleIndexChangeListener.onTitleIndexChanged(onTouchIndex);
+                    if (onIndicatorIndexChangeListener != null) {
+                        onIndicatorIndexChangeListener.onIndicatorIndexChanged(onTouchIndex);
                     }
                     invalidate();
                 }
@@ -198,8 +198,8 @@ public final class LetterIndicatorView extends View {
         if (onTouchIndex < 0) {
             onTouchIndex = 0;
         }
-        if (onTouchIndex >= titles.size()) {
-            onTouchIndex = titles.size() - 1;
+        if (onTouchIndex >= indicators.size()) {
+            onTouchIndex = indicators.size() - 1;
         }
         outChangeIndex = onTouchIndex;
 
@@ -233,12 +233,12 @@ public final class LetterIndicatorView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawBackground(canvas);
-        drawTitles(canvas);
-        drawZoomText(canvas);
+        drawIndicatorBg(canvas);
+        drawIndicators(canvas);
+        drawZoomUpIndicator(canvas);
     }
 
-    private void drawBackground(Canvas canvas) {
+    private void drawIndicatorBg(Canvas canvas) {
         float left = getWidth() - indicatorItemWidth;
         float top = 0;
         float right = getWidth();
@@ -247,9 +247,9 @@ public final class LetterIndicatorView extends View {
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
-    private void drawTitles(Canvas canvas) {
+    private void drawIndicators(Canvas canvas) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
-        for (int i = 0; i < titles.size(); i++) {
+        for (int i = 0; i < indicators.size(); i++) {
             float left = getWidth() - indicatorItemWidth;
             float top = firstItemTop + i * indicatorItemHeight;
             float right = getWidth();
@@ -269,7 +269,7 @@ public final class LetterIndicatorView extends View {
             }
             paint.setTextSize(indicatorTextSize);
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-            String title = titles.get(i);
+            String title = indicators.get(i);
             paint.getTextBounds(title, 0, title.length(), textBounds);
             float xOffset = left + (indicatorItemWidth - textBounds.width()) / 2;
             float yOffset = top + indicatorItemHeight / 2 - fontMetrics.top / 2 - fontMetrics.bottom / 2;
@@ -277,9 +277,9 @@ public final class LetterIndicatorView extends View {
         }
     }
 
-    public void drawZoomText(Canvas canvas) {
+    public void drawZoomUpIndicator(Canvas canvas) {
         if (isOnTouchMode) {
-            // bg
+            // zoom up indicator bg
             float zoomUpRight = getWidth() - indicatorItemWidth - zoomUpIndicatorMargin;
             float circleX = (float) (zoomUpRight - Math.sqrt(3) * zoomUpIndicatorBgRadius);
             float circleY = zoomUpIndicatorCenterY;
@@ -296,11 +296,11 @@ public final class LetterIndicatorView extends View {
             path.arcTo(zoomUpCircleRect, 60, 240);
             paint.setColor(zoomUpIndicatorBgColor);
             canvas.drawPath(path, paint);
-            // text
+            // zoom up indicator text
             paint.setColor(zoomUpIndicatorTextColor);
             paint.setTextSize(zoomUpIndicatorTextSize);
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-            String tmp = titles.get(onTouchIndex);
+            String tmp = indicators.get(onTouchIndex);
             paint.getTextBounds(tmp, 0, tmp.length(), textBounds);
             float xOffset = zoomUpIndicatorBgRadius - textBounds.width() / 2;
             float yOffset = zoomUpIndicatorCenterY - fontMetrics.top / 2 - fontMetrics.bottom / 2;
@@ -310,11 +310,11 @@ public final class LetterIndicatorView extends View {
 
     private float getTotalItemHeight() {
         float total = 0;
-        total += titles.size() * indicatorItemHeight;
+        total += indicators.size() * indicatorItemHeight;
         return total;
     }
 
-    interface OnTitleIndexChangeListener {
-        void onTitleIndexChanged(int index);
+    interface OnIndicatorIndexChangeListener {
+        void onIndicatorIndexChanged(int index);
     }
 }
