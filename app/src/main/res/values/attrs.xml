@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LetterIndicatorView">
-        <attr name="livBackgroundColor" format="color|reference" />
+        <attr name="livIndicatorBgColor" format="color|reference" />
+        <attr name="livIndicatorItemWidth" format="dimension|reference" />
+        <attr name="livIndicatorItemHeight" format="dimension|reference" />
+        <attr name="livIndicatorTextSize" format="dimension|reference" />
+        <attr name="livIndicatorSelectedTextColor" format="color|reference" />
+        <attr name="livIndicatorSelectedBgColor" format="color|reference" />
+        <attr name="livIndicatorSelectedBgRadius" format="dimension|reference" />
+        <attr name="livIndicatorUnSelectTextColor" format="color|reference" />
 
-        <attr name="livItemWidth" format="dimension|reference" />
-        <attr name="livItemHeight" format="dimension|reference" />
-
-        <attr name="livTextSize" format="dimension|reference" />
-        <attr name="livSelectedTextColor" format="color|reference" />
-        <attr name="livSelectedTextBorderColor" format="color|reference" />
-        <attr name="livSelectedTextBorderRadius" format="dimension|reference" />
-        <attr name="livUnSelectTextColor" format="color|reference" />
-
-        <attr name="livZoomTextSize" format="dimension|reference" />
-        <attr name="livZoomTextColor" format="color|reference" />
+        <attr name="livZoomUpIndicatorTextSize" format="dimension|reference" />
+        <attr name="livZoomUpIndicatorTextColor" format="color|reference" />
+        <attr name="livZoomUpIndicatorBgColor" format="color|reference" />
+        <attr name="livZoomUpIndicatorBgRadius" format="dimension|reference" />
+        <attr name="livZoomUpIndicatorMargin" format="dimension|reference" />
     </declare-styleable>
 </resources>

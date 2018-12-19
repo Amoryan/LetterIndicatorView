@@ -18,15 +18,15 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:livBackgroundColor="@android:color/transparent"
-        app:livItemHeight="20dp"
-        app:livItemWidth="30dp"
-        app:livSelectedTextBorderColor="#1b8fe6"
-        app:livSelectedTextBorderRadius="10dp"
-        app:livSelectedTextColor="@android:color/white"
-        app:livTextSize="14sp"
-        app:livUnSelectTextColor="#646464"
-        app:livZoomTextColor="@android:color/white"
-        app:livZoomTextSize="20sp" />
+        app:livIndicatorBgColor="@android:color/transparent"
+        app:livIndicatorItemHeight="20dp"
+        app:livIndicatorItemWidth="30dp"
+        app:livIndicatorSelectedBgColor="#1b8fe6"
+        app:livIndicatorSelectedBgRadius="10dp"
+        app:livIndicatorSelectedTextColor="@android:color/white"
+        app:livIndicatorTextSize="14sp"
+        app:livIndicatorUnSelectTextColor="#646464"
+        app:livZoomUpIndicatorTextColor="@android:color/white"
+        app:livZoomUpIndicatorTextSize="20sp" />
 
 </FrameLayout>
