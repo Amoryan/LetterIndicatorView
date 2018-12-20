@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
+        app:livHeaderDrawable="@mipmap/ic_search"
         app:livIndicatorBgColor="@android:color/transparent"
         app:livIndicatorItemHeight="15dp"
         app:livIndicatorItemWidth="20dp"

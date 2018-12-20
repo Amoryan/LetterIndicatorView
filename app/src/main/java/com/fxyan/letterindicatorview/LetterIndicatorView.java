@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -37,6 +38,8 @@ public final class LetterIndicatorView extends View {
     private int zoomUpIndicatorBgColor;
     private float zoomUpIndicatorBgRadius;
     private float zoomUpIndicatorMargin;
+
+    private Drawable headerDrawable;
 
     private ArrayList<String> indicators;
 
@@ -94,7 +97,7 @@ public final class LetterIndicatorView extends View {
         zoomUpIndicatorMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
     }
 
-    private void loadXmlAttrs(AttributeSet attrs){
+    private void loadXmlAttrs(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.LetterIndicatorView);
 
@@ -137,6 +140,10 @@ public final class LetterIndicatorView extends View {
             }
             if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorMargin)) {
                 zoomUpIndicatorMargin = array.getDimension(R.styleable.LetterIndicatorView_livZoomUpIndicatorMargin, zoomUpIndicatorMargin);
+            }
+
+            if (array.hasValue(R.styleable.LetterIndicatorView_livHeaderDrawable)) {
+                headerDrawable = array.getDrawable(R.styleable.LetterIndicatorView_livHeaderDrawable);
             }
 
             array.recycle();
@@ -196,7 +203,7 @@ public final class LetterIndicatorView extends View {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
         onTouchIndex = (int) ((y - firstItemTop) / indicatorItemHeight);
         if (onTouchIndex < 0) {
-            onTouchIndex = 0;
+            onTouchIndex = -1;
         }
         if (onTouchIndex >= indicators.size()) {
             onTouchIndex = indicators.size() - 1;
@@ -249,10 +256,22 @@ public final class LetterIndicatorView extends View {
 
     private void drawIndicators(Canvas canvas) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
+        float left = getWidth() - indicatorItemWidth;
+        float right = getWidth();
+
+        // header
+        if (headerDrawable != null) {
+            int headerLeft = (int) (right - (indicatorItemWidth + headerDrawable.getIntrinsicWidth()) / 2);
+            int headerTop = (int) (firstItemTop - (indicatorItemHeight + headerDrawable.getIntrinsicHeight()) / 2);
+            int headerRight = (int) (right - (indicatorItemWidth - headerDrawable.getIntrinsicWidth()) / 2);
+            int headerBottom = (int) (firstItemTop - (indicatorItemHeight - headerDrawable.getIntrinsicHeight()) / 2);
+            headerDrawable.setBounds(headerLeft, headerTop, headerRight, headerBottom);
+            headerDrawable.draw(canvas);
+        }
+
+        // title
         for (int i = 0; i < indicators.size(); i++) {
-            float left = getWidth() - indicatorItemWidth;
             float top = firstItemTop + i * indicatorItemHeight;
-            float right = getWidth();
             float bottom = top + indicatorItemHeight;
 
             if (i == onTouchIndex) {
@@ -278,7 +297,7 @@ public final class LetterIndicatorView extends View {
     }
 
     public void drawZoomUpIndicator(Canvas canvas) {
-        if (isOnTouchMode) {
+        if (isOnTouchMode && onTouchIndex >= 0) {
             // zoom up indicator bg
             float zoomUpRight = getWidth() - indicatorItemWidth - zoomUpIndicatorMargin;
             float circleX = (float) (zoomUpRight - Math.sqrt(3) * zoomUpIndicatorBgRadius);

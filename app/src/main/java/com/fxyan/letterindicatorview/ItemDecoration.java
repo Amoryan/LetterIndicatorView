@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -91,31 +92,37 @@ public final class ItemDecoration extends RecyclerView.ItemDecoration {
             }
         }
 
-        float top = 0;
-        int currentR = 0x1b;
-        int currentG = 0x8f;
-        int currentB = 0xe6;
-        if (array.indexOfKey(secondVisibleViewIndex) >= 0
-                && firstVisibleView.getBottom() <= dp40) {
-            // 第一个可见的控件是该组最后一个控件
-            top = firstVisibleView.getBottom() - dp40;
+        if (!TextUtils.isEmpty(tmp)) {
+            float top = 0;
+            int currentR = 0x1b;
+            int currentG = 0x8f;
+            int currentB = 0xe6;
+            if (array.indexOfKey(secondVisibleViewIndex) >= 0
+                    && firstVisibleView.getBottom() <= dp40) {
+                // 第一个可见的控件是该组最后一个控件
+                top = firstVisibleView.getBottom() - dp40;
 
-            int endR = 0x64;
-            int endG = 0x64;
-            int endB = 0x64;
+                int endR = 0x64;
+                int endG = 0x64;
+                int endB = 0x64;
 
-            currentR = (int) (currentR - (currentR - endR) * (Math.abs(top) / dp40));
-            currentG = (int) (currentG - (currentG - endG) * (Math.abs(top) / dp40));
-            currentB = (int) (currentB - (currentB - endB) * (Math.abs(top) / dp40));
+                currentR = (int) (currentR - (currentR - endR) * (Math.abs(top) / dp40));
+                currentG = (int) (currentG - (currentG - endG) * (Math.abs(top) / dp40));
+                currentB = (int) (currentB - (currentB - endB) * (Math.abs(top) / dp40));
+            }
+            paint.setColor(Color.parseColor("#f5f5f5"));
+            c.drawRect(0, top, parent.getWidth(), top + dp40, paint);
+            float xOffset = dp12;
+            float yOffset = top + dp40 / 2 + fontMetrics.descent;
+
+            int color = Color.rgb(currentR, currentG, currentB);
+            paint.setColor(color);
+            c.drawText(tmp, xOffset, yOffset, paint);
+        } else {
+            if (onTitleIndexChangeListener != null) {
+                onTitleIndexChangeListener.onTitleIndexChanged(-1);
+            }
         }
-        paint.setColor(Color.parseColor("#f5f5f5"));
-        c.drawRect(0, top, parent.getWidth(), top + dp40, paint);
-        float xOffset = dp12;
-        float yOffset = top + dp40 / 2 + fontMetrics.descent;
-
-        int color = Color.rgb(currentR, currentG, currentB);
-        paint.setColor(color);
-        c.drawText(tmp, xOffset, yOffset, paint);
     }
 
     @Override

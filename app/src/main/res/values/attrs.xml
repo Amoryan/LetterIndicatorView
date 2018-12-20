@@ -15,5 +15,7 @@
         <attr name="livZoomUpIndicatorBgColor" format="color|reference" />
         <attr name="livZoomUpIndicatorBgRadius" format="dimension|reference" />
         <attr name="livZoomUpIndicatorMargin" format="dimension|reference" />
+
+        <attr name="livHeaderDrawable" format="reference" />
     </declare-styleable>
 </resources>
