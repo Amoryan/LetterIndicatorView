@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 
+import com.fxyan.widget.LetterIndicatorView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public void onIndicatorIndexChanged(int index) {
                 if (index >= 0) {
                     lm.scrollToPositionWithOffset(array.keyAt(index), 0);
-                } else {
+                } else if (index == -1) {
                     lm.scrollToPositionWithOffset(0, 0);
                 }
             }

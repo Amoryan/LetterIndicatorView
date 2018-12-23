@@ -1,4 +1,4 @@
-package com.fxyan.letterindicatorview;
+package com.fxyan.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -167,6 +168,9 @@ public final class LetterIndicatorView extends View {
         onIndicatorIndexChangeListener = listener;
     }
 
+    public void attachToRecyclerView(RecyclerView recyclerView) {
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
@@ -201,7 +205,7 @@ public final class LetterIndicatorView extends View {
 
     private void calculateOnTouchIndex(float y) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
-        onTouchIndex = (int) ((y - firstItemTop) / indicatorItemHeight);
+        onTouchIndex = (int) Math.floor((y - firstItemTop) / indicatorItemHeight);
         if (onTouchIndex < 0) {
             onTouchIndex = -1;
         }
@@ -333,7 +337,7 @@ public final class LetterIndicatorView extends View {
         return total;
     }
 
-    interface OnIndicatorIndexChangeListener {
+    public interface OnIndicatorIndexChangeListener {
         void onIndicatorIndexChanged(int index);
     }
 }
