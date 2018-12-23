@@ -3,43 +3,26 @@ package com.fxyan.letterindicatorview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author fxYan
  */
-public final class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
+public final class Adapter extends BaseRecyclerAdapter<String, Adapter.ViewHolder> {
 
-    Context context;
-    LayoutInflater inflater;
-    List<String> data;
-
-    public Adapter(Context context) {
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.data = new ArrayList<>();
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(inflater.inflate(R.layout.listitem, viewGroup, false));
+    public Adapter(@NonNull Context context) {
+        super(context, R.layout.listitem);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.nameTv.setText(data.get(i));
+    protected ViewHolder createItemViewHolder(View view, int viewType) {
+        return new ViewHolder(view);
     }
 
     @Override
-    public int getItemCount() {
-        return data.size();
+    protected void bindData(ViewHolder h, String obj, int position) {
+        h.nameTv.setText(obj);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

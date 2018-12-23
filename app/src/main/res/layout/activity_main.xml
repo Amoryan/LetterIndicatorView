@@ -18,13 +18,19 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:livBackgroundColor="@android:color/transparent"
-        app:livItemHeight="20dp"
-        app:livItemWidth="30dp"
-        app:livSelectedTextBorderColor="#1b8fe6"
-        app:livSelectedTextBorderRadius="10dp"
-        app:livSelectedTextColor="@android:color/white"
-        app:livTextSize="14sp"
-        app:livUnSelectTextColor="#646464" />
+        app:livHeaderDrawable="@mipmap/ic_search"
+        app:livIndicatorBgColor="@android:color/transparent"
+        app:livIndicatorItemHeight="15dp"
+        app:livIndicatorItemWidth="20dp"
+        app:livIndicatorSelectedBgColor="#1b8fe6"
+        app:livIndicatorSelectedBgRadius="8dp"
+        app:livIndicatorSelectedTextColor="@android:color/white"
+        app:livIndicatorTextSize="10sp"
+        app:livIndicatorUnSelectTextColor="#646464"
+        app:livZoomUpIndicatorBgColor="#20000000"
+        app:livZoomUpIndicatorBgRadius="20dp"
+        app:livZoomUpIndicatorMargin="5dp"
+        app:livZoomUpIndicatorTextColor="@android:color/white"
+        app:livZoomUpIndicatorTextSize="20sp" />
 
 </FrameLayout>

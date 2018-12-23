@@ -1,13 +1,14 @@
 package com.fxyan.letterindicatorview;
 
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,39 +30,48 @@ public class MainActivity extends AppCompatActivity {
         ItemDecoration itemDecoration = new ItemDecoration(this, array);
         recyclerView.addItemDecoration(itemDecoration);
         Adapter adapter = new Adapter(this);
+        adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listheader, recyclerView, false));
         recyclerView.setAdapter(adapter);
 
-        indicatorView.setOnTitleIndexChangeListener(new LetterIndicatorView.OnTitleIndexChangeListener() {
+        indicatorView.setOnIndicatorIndexChangeListener(new LetterIndicatorView.OnIndicatorIndexChangeListener() {
             @Override
-            public void onTitleIndexChanged(int index) {
+            public void onIndicatorIndexChanged(int index) {
                 if (index >= 0) {
                     lm.scrollToPositionWithOffset(array.keyAt(index), 0);
+                } else {
+                    lm.scrollToPositionWithOffset(0, 0);
                 }
             }
         });
         itemDecoration.setOnTitleIndexChangeListener(new ItemDecoration.OnTitleIndexChangeListener() {
             @Override
             public void onTitleIndexChanged(int index) {
-                indicatorView.setCurrent(index);
+                indicatorView.setOutChangeIndex(index);
             }
         });
 
+        adapter.dataSource.clear();
         ArrayList<String> titles = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : getTestData().entrySet()) {
             titles.add(entry.getKey());
-            array.put(adapter.data.size(), entry.getKey());
-            adapter.data.addAll(entry.getValue());
+            array.put(adapter.getHeadersCount() + adapter.dataSource.size(), entry.getKey());
+            adapter.dataSource.addAll(entry.getValue());
         }
-        indicatorView.setTitles(titles);
+        indicatorView.setIndicators(titles);
         adapter.notifyDataSetChanged();
     }
 
     private Map<String, List<String>> getTestData() {
         String[] prefixs = {"A", "B", "E", "F", "G", "M", "N", "P", "R", "T", "W", "X", "Z"};
-        Map<String, List<String>> map = new HashMap<>();
+        Map<String, List<String>> map = new ArrayMap<>();
 
         for (String prefix : prefixs) {
             List<String> list = new ArrayList<>();
+            if (prefix.equals("Z")) {
+                list.add(String.format("%s%s", prefix, 0));
+                map.put(prefix, list);
+                continue;
+            }
             for (int i = 0; i < 10; i++) {
                 list.add(String.format("%s%s", prefix, i));
             }

@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -22,26 +24,36 @@ import java.util.ArrayList;
  */
 public final class LetterIndicatorView extends View {
 
-    private int backgroundColor;
+    private int indicatorBgColor;
+    private float indicatorItemWidth;
+    private float indicatorItemHeight;
+    private float indicatorTextSize;
+    private int indicatorSelectedTextColor;
+    private int indicatorSelectedBgColor;
+    private float indicatorSelectedBgRadius;
+    private int indicatorUnSelectTextColor;
 
-    private float itemWidth;
-    private float itemHeight;
+    private float zoomUpIndicatorTextSize;
+    private int zoomUpIndicatorTextColor;
+    private int zoomUpIndicatorBgColor;
+    private float zoomUpIndicatorBgRadius;
+    private float zoomUpIndicatorMargin;
 
-    private float textSize;
-    private int selectedTextColor;
-    private int selectedTextBorderColor;
-    private float selectedTextBorderRadius;
-    private int unSelectTextColor;
+    private Drawable headerDrawable;
 
-    private float zoomTextSize;
+    private ArrayList<String> indicators;
 
     private Paint paint;
-    private Path path;
     private Rect textBounds;
-    private ArrayList<String> titles;
-    private boolean isInTouchMode;
-    private int current;
-    private OnTitleIndexChangeListener onTitleIndexChangeListener;
+    private Path path;
+    private RectF zoomUpCircleRect;
+
+    private boolean isOnTouchMode;
+    private float zoomUpIndicatorCenterY;
+
+    private int onTouchIndex;
+    private int outChangeIndex;
+    private OnIndicatorIndexChangeListener onIndicatorIndexChangeListener;
 
     public LetterIndicatorView(Context context) {
         super(context);
@@ -55,41 +67,14 @@ public final class LetterIndicatorView extends View {
 
     private void init(AttributeSet attrs) {
         configDefaultAttrs();
-        if (attrs != null) {
-            TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.LetterIndicatorView);
+        loadXmlAttrs(attrs);
 
-            backgroundColor = array.getColor(R.styleable.LetterIndicatorView_livBackgroundColor, backgroundColor);
-
-            itemWidth = array.getDimension(R.styleable.LetterIndicatorView_livItemWidth, itemWidth);
-            itemHeight = array.getDimension(R.styleable.LetterIndicatorView_livItemHeight, itemHeight);
-
-            textSize = array.getDimension(R.styleable.LetterIndicatorView_livTextSize, textSize);
-            selectedTextColor = array.getColor(R.styleable.LetterIndicatorView_livSelectedTextColor, selectedTextColor);
-            selectedTextBorderColor = array.getColor(R.styleable.LetterIndicatorView_livSelectedTextBorderColor, selectedTextBorderColor);
-            selectedTextBorderRadius = array.getDimension(R.styleable.LetterIndicatorView_livSelectedTextBorderRadius, selectedTextBorderRadius);
-            unSelectTextColor = array.getColor(R.styleable.LetterIndicatorView_livUnSelectTextColor, unSelectTextColor);
-
-            array.recycle();
-        }
+        indicators = new ArrayList<>();
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textBounds = new Rect();
-        titles = new ArrayList<>();
         path = new Path();
-    }
-
-    public void setTitles(ArrayList<String> titles) {
-        this.titles.clear();
-        this.titles.addAll(titles);
-    }
-
-    public void setCurrent(int index) {
-        current = index;
-        invalidate();
-    }
-
-    public void setOnTitleIndexChangeListener(OnTitleIndexChangeListener listener) {
-        onTitleIndexChangeListener = listener;
+        zoomUpCircleRect = new RectF();
     }
 
     private void configDefaultAttrs() {
@@ -97,47 +82,141 @@ public final class LetterIndicatorView extends View {
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
 
-        backgroundColor = Color.TRANSPARENT;
+        indicatorBgColor = Color.TRANSPARENT;
+        indicatorItemWidth = indicatorItemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+        indicatorTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
+        indicatorSelectedTextColor = Color.parseColor("#1b8fe6");
+        indicatorSelectedBgColor = Color.TRANSPARENT;
+        indicatorSelectedBgRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
+        indicatorUnSelectTextColor = Color.parseColor("#646464");
 
-        itemWidth = itemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+        zoomUpIndicatorTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+        zoomUpIndicatorTextColor = Color.WHITE;
+        zoomUpIndicatorBgColor = Color.argb(0x30, 0x00, 0x00, 0x00);
+        zoomUpIndicatorBgRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, metrics);
+        zoomUpIndicatorMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
+    }
 
-        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, metrics);
-        selectedTextColor = Color.parseColor("#1b8fe6");
-        selectedTextBorderColor = Color.TRANSPARENT;
-        selectedTextBorderRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-        unSelectTextColor = Color.parseColor("#646464");
+    private void loadXmlAttrs(AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.LetterIndicatorView);
+
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorBgColor)) {
+                indicatorBgColor = array.getColor(R.styleable.LetterIndicatorView_livIndicatorBgColor, indicatorBgColor);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorItemWidth)) {
+                indicatorItemWidth = array.getDimension(R.styleable.LetterIndicatorView_livIndicatorItemWidth, indicatorItemWidth);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorItemHeight)) {
+                indicatorItemHeight = array.getDimension(R.styleable.LetterIndicatorView_livIndicatorItemHeight, indicatorItemHeight);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorTextSize)) {
+                indicatorTextSize = array.getDimension(R.styleable.LetterIndicatorView_livIndicatorTextSize, indicatorTextSize);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorSelectedTextColor)) {
+                indicatorSelectedTextColor = array.getColor(R.styleable.LetterIndicatorView_livIndicatorSelectedTextColor, indicatorSelectedTextColor);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorSelectedBgColor)) {
+                indicatorSelectedBgColor = array.getColor(R.styleable.LetterIndicatorView_livIndicatorSelectedBgColor, indicatorSelectedBgColor);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorSelectedBgRadius)) {
+                indicatorSelectedBgRadius = array.getDimension(R.styleable.LetterIndicatorView_livIndicatorSelectedBgRadius, indicatorSelectedBgRadius);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livIndicatorUnSelectTextColor)) {
+                indicatorUnSelectTextColor = array.getColor(R.styleable.LetterIndicatorView_livIndicatorUnSelectTextColor, indicatorUnSelectTextColor);
+            }
+
+            if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorTextSize)) {
+                zoomUpIndicatorTextSize = array.getDimension(R.styleable.LetterIndicatorView_livZoomUpIndicatorTextSize, zoomUpIndicatorTextSize);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorBgColor)) {
+                zoomUpIndicatorBgColor = array.getColor(R.styleable.LetterIndicatorView_livZoomUpIndicatorBgColor, zoomUpIndicatorBgColor);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorTextColor)) {
+                zoomUpIndicatorTextColor = array.getColor(R.styleable.LetterIndicatorView_livZoomUpIndicatorTextColor, zoomUpIndicatorTextColor);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorBgRadius)) {
+                zoomUpIndicatorBgRadius = array.getDimension(R.styleable.LetterIndicatorView_livZoomUpIndicatorBgRadius, zoomUpIndicatorBgRadius);
+            }
+            if (array.hasValue(R.styleable.LetterIndicatorView_livZoomUpIndicatorMargin)) {
+                zoomUpIndicatorMargin = array.getDimension(R.styleable.LetterIndicatorView_livZoomUpIndicatorMargin, zoomUpIndicatorMargin);
+            }
+
+            if (array.hasValue(R.styleable.LetterIndicatorView_livHeaderDrawable)) {
+                headerDrawable = array.getDrawable(R.styleable.LetterIndicatorView_livHeaderDrawable);
+            }
+
+            array.recycle();
+        }
+    }
+
+    public void setIndicators(ArrayList<String> indicators) {
+        this.indicators.clear();
+        this.indicators.addAll(indicators);
+    }
+
+    public void setOutChangeIndex(int index) {
+        outChangeIndex = index;
+        if (!isOnTouchMode) {
+            onTouchIndex = outChangeIndex;
+            invalidate();
+        }
+    }
+
+    public void setOnIndicatorIndexChangeListener(OnIndicatorIndexChangeListener listener) {
+        onIndicatorIndexChangeListener = listener;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                isInTouchMode = true;
+                float x = event.getX();
+                if (x >= getWidth() - indicatorItemWidth) {
+                    isOnTouchMode = true;
+                }
             case MotionEvent.ACTION_MOVE:
-                float y = event.getY();
-                calculateYIndex(y);
-                if (onTitleIndexChangeListener != null) {
-                    onTitleIndexChangeListener.onTitleIndexChanged(current);
+                if (isOnTouchMode) {
+                    float y = event.getY();
+                    calculateOnTouchIndex(y);
+                    if (onIndicatorIndexChangeListener != null) {
+                        onIndicatorIndexChangeListener.onIndicatorIndexChanged(onTouchIndex);
+                    }
+                    invalidate();
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                isInTouchMode = false;
+                onTouchIndex = outChangeIndex;
+                invalidate();
+                isOnTouchMode = false;
                 break;
             default:
         }
-        invalidate();
-        return true;
+        if (isOnTouchMode) {
+            return true;
+        }
+        return super.onTouchEvent(event);
     }
 
-    private void calculateYIndex(float y) {
+    private void calculateOnTouchIndex(float y) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
-        current = (int) ((y - firstItemTop) / itemHeight);
-        if (current < 0) {
-            current = 0;
+        onTouchIndex = (int) ((y - firstItemTop) / indicatorItemHeight);
+        if (onTouchIndex < 0) {
+            onTouchIndex = -1;
         }
-        if (current >= titles.size()) {
-            current = titles.size() - 1;
+        if (onTouchIndex >= indicators.size()) {
+            onTouchIndex = indicators.size() - 1;
+        }
+        outChangeIndex = onTouchIndex;
+
+        zoomUpIndicatorCenterY = y;
+        if (zoomUpIndicatorCenterY < firstItemTop + indicatorItemHeight / 2) {
+            zoomUpIndicatorCenterY = firstItemTop + indicatorItemHeight / 2;
+        }
+        float lastItemBottom = firstItemTop + getTotalItemHeight();
+        if (zoomUpIndicatorCenterY > lastItemBottom - indicatorItemHeight / 2) {
+            zoomUpIndicatorCenterY = lastItemBottom - indicatorItemHeight / 2;
         }
     }
 
@@ -146,7 +225,8 @@ public final class LetterIndicatorView extends View {
         int wMode = MeasureSpec.getMode(widthMeasureSpec);
         int wSize = MeasureSpec.getSize(widthMeasureSpec);
         if (wMode == MeasureSpec.AT_MOST) {
-            wSize = (int) Math.floor(itemWidth + 0.5);
+            double zoomUpWidth = Math.sqrt(3) * zoomUpIndicatorBgRadius + zoomUpIndicatorBgRadius;
+            wSize = (int) Math.floor(indicatorItemWidth + zoomUpWidth + zoomUpIndicatorMargin + 0.5);
         }
 
         int hMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -160,63 +240,100 @@ public final class LetterIndicatorView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawBackground(canvas);
-        drawTitles(canvas);
-        drawZoomText(canvas);
+        drawIndicatorBg(canvas);
+        drawIndicators(canvas);
+        drawZoomUpIndicator(canvas);
     }
 
-    private void drawBackground(Canvas canvas) {
-        float left = getWidth() - itemWidth;
+    private void drawIndicatorBg(Canvas canvas) {
+        float left = getWidth() - indicatorItemWidth;
         float top = 0;
         float right = getWidth();
         float bottom = getHeight();
-        paint.setColor(backgroundColor);
+        paint.setColor(indicatorBgColor);
         canvas.drawRect(left, top, right, bottom, paint);
     }
 
-    private void drawTitles(Canvas canvas) {
+    private void drawIndicators(Canvas canvas) {
         float firstItemTop = (getHeight() - getTotalItemHeight()) / 2;
-        for (int i = 0; i < titles.size(); i++) {
-            float left = getWidth() - itemWidth;
-            float top = firstItemTop + i * itemHeight;
-            float right = getWidth();
-            float bottom = top + itemHeight;
+        float left = getWidth() - indicatorItemWidth;
+        float right = getWidth();
 
-            if (i == current) {
-                paint.setColor(selectedTextBorderColor);
+        // header
+        if (headerDrawable != null) {
+            int headerLeft = (int) (right - (indicatorItemWidth + headerDrawable.getIntrinsicWidth()) / 2);
+            int headerTop = (int) (firstItemTop - (indicatorItemHeight + headerDrawable.getIntrinsicHeight()) / 2);
+            int headerRight = (int) (right - (indicatorItemWidth - headerDrawable.getIntrinsicWidth()) / 2);
+            int headerBottom = (int) (firstItemTop - (indicatorItemHeight - headerDrawable.getIntrinsicHeight()) / 2);
+            headerDrawable.setBounds(headerLeft, headerTop, headerRight, headerBottom);
+            headerDrawable.draw(canvas);
+        }
+
+        // title
+        for (int i = 0; i < indicators.size(); i++) {
+            float top = firstItemTop + i * indicatorItemHeight;
+            float bottom = top + indicatorItemHeight;
+
+            if (i == onTouchIndex) {
+                paint.setColor(indicatorSelectedBgColor);
                 float centerX = (left + right) / 2;
                 float centerY = (top + bottom) / 2;
                 path.reset();
-                path.addCircle(centerX, centerY, selectedTextBorderRadius, Path.Direction.CCW);
+                path.addCircle(centerX, centerY, indicatorSelectedBgRadius, Path.Direction.CCW);
                 canvas.drawPath(path, paint);
 
-                paint.setColor(selectedTextColor);
+                paint.setColor(indicatorSelectedTextColor);
             } else {
-                paint.setColor(unSelectTextColor);
+                paint.setColor(indicatorUnSelectTextColor);
             }
-            paint.setTextSize(textSize);
+            paint.setTextSize(indicatorTextSize);
             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-            String title = titles.get(i);
+            String title = indicators.get(i);
             paint.getTextBounds(title, 0, title.length(), textBounds);
-            float xOffset = left + (itemWidth - textBounds.width()) / 2;
-            float yOffset = top + itemHeight / 2 + fontMetrics.descent;
+            float xOffset = left + (indicatorItemWidth - textBounds.width()) / 2;
+            float yOffset = top + indicatorItemHeight / 2 - fontMetrics.top / 2 - fontMetrics.bottom / 2;
             canvas.drawText(title, xOffset, yOffset, paint);
         }
     }
 
-    public void drawZoomText(Canvas canvas) {
-        if (isInTouchMode) {
-            // TODO
+    public void drawZoomUpIndicator(Canvas canvas) {
+        if (isOnTouchMode && onTouchIndex >= 0) {
+            // zoom up indicator bg
+            float zoomUpRight = getWidth() - indicatorItemWidth - zoomUpIndicatorMargin;
+            float circleX = (float) (zoomUpRight - Math.sqrt(3) * zoomUpIndicatorBgRadius);
+            float circleY = zoomUpIndicatorCenterY;
+            zoomUpCircleRect.left = circleX - zoomUpIndicatorBgRadius;
+            zoomUpCircleRect.top = circleY - zoomUpIndicatorBgRadius;
+            zoomUpCircleRect.right = circleX + zoomUpIndicatorBgRadius;
+            zoomUpCircleRect.bottom = circleY + zoomUpIndicatorBgRadius;
+            path.reset();
+            double degree = Math.toRadians(60);
+            path.moveTo(zoomUpRight, circleY);
+            path.lineTo((float) (circleX + Math.cos(degree) * zoomUpIndicatorBgRadius), (float) (circleY - Math.sin(degree) * zoomUpIndicatorBgRadius));
+            path.moveTo(zoomUpRight, circleY);
+            path.lineTo((float) (circleX + Math.cos(degree) * zoomUpIndicatorBgRadius), (float) (circleY + Math.sin(degree) * zoomUpIndicatorBgRadius));
+            path.arcTo(zoomUpCircleRect, 60, 240);
+            paint.setColor(zoomUpIndicatorBgColor);
+            canvas.drawPath(path, paint);
+            // zoom up indicator text
+            paint.setColor(zoomUpIndicatorTextColor);
+            paint.setTextSize(zoomUpIndicatorTextSize);
+            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+            String tmp = indicators.get(onTouchIndex);
+            paint.getTextBounds(tmp, 0, tmp.length(), textBounds);
+            float xOffset = zoomUpIndicatorBgRadius - textBounds.width() / 2;
+            float yOffset = zoomUpIndicatorCenterY - fontMetrics.top / 2 - fontMetrics.bottom / 2;
+            canvas.drawText(tmp, xOffset, yOffset, paint);
         }
     }
 
     private float getTotalItemHeight() {
         float total = 0;
-        total += titles.size() * itemHeight;
+        total += indicators.size() * indicatorItemHeight;
         return total;
     }
 
-    interface OnTitleIndexChangeListener {
-        void onTitleIndexChanged(int index);
+    interface OnIndicatorIndexChangeListener {
+        void onIndicatorIndexChanged(int index);
     }
 }
