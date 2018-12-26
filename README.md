@@ -84,3 +84,132 @@ indicatorView.attachToRecyclerView(recyclerView, config, array);
 7. textSize，文本大小，通过setTextSize()设置；
 8. textXOffset，文本x轴偏移量，通过setTextSize()设置；
 9. height，分组高度，通过setHeight()设置。
+### 自定义ItemDecoration
+如果自带的Decoration不支持需求，可以自己编写Decoration
+### 碰撞效果
+碰撞效果在Decoration的onDrawOver()方法中
+```java
+View firstVisibleView = parent.getChildAt(0);
+int firstVisibleViewIndex = parent.getChildAdapterPosition(firstVisibleView);
+View secondVisibleView = parent.getChildAt(1);
+int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
+float top = 0;
+if (array.indexOfKey(secondVisibleViewIndex) >= 0
+        && firstVisibleView.getBottom() <= config.getHeight()) {
+    // 这里表示需要绘制碰撞效果，第二组的第一个元素刚好是RecyclerView的第二个子控件
+    top = firstVisibleView.getBottom() - config.getHeight();
+    // y轴偏移量
+    float yOffset = top + config.getHeight() / 2 - (fontMetrics.bottom + fontMetrics.top) / 2;
+    // ...绘制
+}
+```
+
+### 颜色渐变
+onDraw()方法中主要是处理Item上的指示器渐变
+```java
+public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+    super.onDraw(c, parent, state);
+    for (int i = 0; i < parent.getChildCount(); i++) {
+        View child = parent.getChildAt(i);
+        int position = parent.getChildAdapterPosition(child);
+        if (array.indexOfKey(position) >= 0) {
+            String tmp = array.get(position);
+            float xOffset = config.getTextXOffset();
+            float yOffset = child.getTop() - config.getHeight() / 2 - (fontMetrics.bottom + fontMetrics.top) / 2;
+
+            View firstVisibleView = parent.getChildAt(0);
+            View secondVisibleView = parent.getChildAt(1);
+            int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
+
+            int bgColor = Color.rgb(config.getUnSelectBgColorR(), config.getUnSelectBgColorG(), config.getUnSelectBgColorB());
+            int textColor = Color.rgb(config.getUnSelectTextColorR(), config.getUnSelectTextColorG(), config.getUnSelectTextColorB());
+            if (array.indexOfKey(secondVisibleViewIndex) >= 0 && secondVisibleViewIndex == position
+                    && firstVisibleView.getBottom() <= config.getHeight()) {
+                // 这里是计算碰撞的时候Item上的文本和背景的渐变颜色值
+                int currentTextR = config.getUnSelectTextColorR();
+                int currentTextG = config.getUnSelectTextColorG();
+                int currentTextB = config.getUnSelectTextColorB();
+                int currentBgR = config.getUnSelectBgColorR();
+                int currentBgG = config.getUnSelectBgColorG();
+                int currentBgB = config.getUnSelectBgColorB();
+
+                int endTextR = config.getSelectedTextColorR();
+                int endTextG = config.getSelectedTextColorG();
+                int endTextB = config.getSelectedTextColorB();
+                int endBgR = config.getSelectedBgColorR();
+                int endBgG = config.getSelectedBgColorG();
+                int endBgB = config.getSelectedBgColorB();
+                // 这里是计算渐变百分比
+                float percent = 1f * (config.getHeight() - firstVisibleView.getBottom()) / config.getHeight();
+                // text
+                currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
+                currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
+                currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
+                // bg
+                currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
+                currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
+                currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
+                bgColor = Color.rgb(currentBgR, currentBgG, currentBgB);
+                textColor = Color.rgb(currentTextR, currentTextG, currentTextB);
+            }
+            
+            // ... 
+            paint.setColor(bgColor);
+            c.drawRect(0, child.getTop() - config.getHeight() + config.getLineHeight(), child.getRight(), child.getTop() - config.getLineHeight(), paint);
+            paint.setColor(textColor);
+            c.drawText(tmp, xOffset, yOffset, paint);
+        }
+    }
+}
+```
+
+onDrawOver()方法中主要是处理覆盖物上的指示器渐变。
+```java
+public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+    super.onDrawOver(c, parent, state);
+
+    View firstVisibleView = parent.getChildAt(0);
+    int firstVisibleViewIndex = parent.getChildAdapterPosition(firstVisibleView);
+    View secondVisibleView = parent.getChildAt(1);
+    int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
+
+    // ...
+    
+    float top = 0;
+    int currentTextR = config.getSelectedTextColorR();
+    int currentTextG = config.getSelectedTextColorG();
+    int currentTextB = config.getSelectedTextColorB();
+    int currentBgR = config.getSelectedBgColorR();
+    int currentBgG = config.getSelectedBgColorG();
+    int currentBgB = config.getSelectedBgColorB();
+    if (array.indexOfKey(secondVisibleViewIndex) >= 0
+            && firstVisibleView.getBottom() <= config.getHeight()) {
+        // 第一个可见的控件是该组最后一个控件，这里是计算覆盖物的文本和背景的颜色值
+        top = firstVisibleView.getBottom() - config.getHeight();
+        // text
+        int endTextR = config.getUnSelectTextColorR();
+        int endTextG = config.getUnSelectTextColorG();
+        int endTextB = config.getUnSelectTextColorB();
+        // bg
+        int endBgR = config.getUnSelectBgColorR();
+        int endBgG = config.getUnSelectBgColorG();
+        int endBgB = config.getUnSelectBgColorB();
+        // 这里是渐变百分比
+        float percent = 1f * Math.abs(top) / config.getHeight();
+
+        currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
+        currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
+        currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
+        currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
+        currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
+        currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
+    }
+    paint.setColor(Color.rgb(currentBgR, currentBgG, currentBgB));
+    c.drawRect(0, top + config.getLineHeight(), parent.getWidth(), top + config.getHeight() - config.getLineHeight(), paint);
+    float xOffset = config.getTextXOffset();
+    float yOffset = top + config.getHeight() / 2 - (fontMetrics.bottom + fontMetrics.top) / 2;
+    int color = Color.rgb(currentTextR, currentTextG, currentTextB);
+    paint.setColor(color);
+    c.drawText(tmp, xOffset, yOffset, paint);
+}
+```
