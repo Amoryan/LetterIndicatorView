@@ -1,4 +1,4 @@
-package com.fxyan.letterindicatorview.entity;
+package com.fxyan.letterindicatorview.entity.wechat;
 
 /**
  * @author fxYan

@@ -1,4 +1,4 @@
-package com.fxyan.letterindicatorview.adapter;
+package com.fxyan.letterindicatorview.adapter.wechat;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,17 +11,18 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.fxyan.letterindicatorview.Tools;
+import com.fxyan.letterindicatorview.adapter.BaseRecyclerAdapter;
 
 /**
  * @author fxYan
  */
-public final class WechatItemDecoration extends RecyclerView.ItemDecoration {
+public final class WeChatItemDecoration extends RecyclerView.ItemDecoration {
 
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private SparseArray<String> array;
     private int dp64;
 
-    public WechatItemDecoration(Context context, SparseArray<String> array) {
+    public WeChatItemDecoration(Context context, SparseArray<String> array) {
         this.array = array;
         this.paint.setColor(Color.parseColor("#ebebeb"));
         dp64 = (int) Tools.dp2px(context, 64);

@@ -13,10 +13,10 @@ import android.view.View;
 import com.fxyan.decoration.DecorationConfig;
 import com.fxyan.letterindicatorview.R;
 import com.fxyan.letterindicatorview.Tools;
-import com.fxyan.letterindicatorview.adapter.WeChatAdapter;
-import com.fxyan.letterindicatorview.adapter.WechatItemDecoration;
-import com.fxyan.letterindicatorview.entity.WeChatContactItem;
-import com.fxyan.letterindicatorview.entity.WeChatContactRespBean;
+import com.fxyan.letterindicatorview.adapter.wechat.WeChatAdapter;
+import com.fxyan.letterindicatorview.adapter.wechat.WeChatItemDecoration;
+import com.fxyan.letterindicatorview.entity.wechat.WeChatContactItem;
+import com.fxyan.letterindicatorview.entity.wechat.WeChatContactRespBean;
 import com.fxyan.widget.LetterIndicatorView;
 import com.google.gson.Gson;
 
@@ -56,9 +56,9 @@ public final class WeChatContactActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         array = new SparseArray<>();
-        recyclerView.addItemDecoration(new WechatItemDecoration(this, array));
+        recyclerView.addItemDecoration(new WeChatItemDecoration(this, array));
         DecorationConfig config = new DecorationConfig.Builder()
-                .setSelectedTextColor(0x43, 0xc5, 0x61)
+                .setSelectedTextColor(0x33, 0x33, 0x33)
                 .setUnSelectTextColor(0x64, 0x64, 0x64)
                 .setSelectedBgColor(0xff, 0xff, 0xff)
                 .setUnSelectBgColor(0xf8, 0xf9, 0xfa)

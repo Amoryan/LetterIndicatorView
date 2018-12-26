@@ -1,4 +1,4 @@
-package com.fxyan.letterindicatorview.adapter;
+package com.fxyan.letterindicatorview.adapter.wechat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.fxyan.letterindicatorview.R;
-import com.fxyan.letterindicatorview.entity.WeChatContactItem;
+import com.fxyan.letterindicatorview.adapter.BaseRecyclerAdapter;
+import com.fxyan.letterindicatorview.entity.wechat.WeChatContactItem;
 import com.fxyan.letterindicatorview.widget.RoundImageView;
 
 /**

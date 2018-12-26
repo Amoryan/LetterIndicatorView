@@ -5,6 +5,9 @@ package com.fxyan.decoration;
  */
 public final class DecorationConfig {
 
+    private int lineHeight;
+    private int lineColor;
+
     private int selectedBgColorR;
     private int selectedBgColorG;
     private int selectedBgColorB;
@@ -25,6 +28,14 @@ public final class DecorationConfig {
     private float textSize;
 
     private int height;
+
+    public int getLineHeight() {
+        return lineHeight;
+    }
+
+    public int getLineColor() {
+        return lineColor;
+    }
 
     public int getSelectedBgColorR() {
         return selectedBgColorR;
@@ -92,6 +103,12 @@ public final class DecorationConfig {
 
         public Builder() {
             config = new DecorationConfig();
+        }
+
+        public Builder setLine(int height, int color) {
+            config.lineHeight = height;
+            config.lineColor = color;
+            return this;
         }
 
         public Builder setSelectedBgColor(int r, int g, int b) {
