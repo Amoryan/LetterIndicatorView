@@ -53,40 +53,38 @@ public final class Decoration extends RecyclerView.ItemDecoration {
                 View secondVisibleView = parent.getChildAt(1);
                 int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
 
-                int bgColor = Color.rgb(config.getUnSelectTextColorR(), config.getUnSelectTextColorG(), config.getUnSelectTextColorB());
+                int bgColor = Color.rgb(config.getUnSelectBgColorR(), config.getUnSelectBgColorG(), config.getUnSelectBgColorB());
                 int textColor = Color.rgb(config.getUnSelectTextColorR(), config.getUnSelectTextColorG(), config.getUnSelectTextColorB());
-                if (secondVisibleViewIndex == position) {
+                if (array.indexOfKey(secondVisibleViewIndex) >= 0 && secondVisibleViewIndex == position
+                        && firstVisibleView.getBottom() <= config.getHeight()) {
                     int currentTextR = config.getUnSelectTextColorR();
                     int currentTextG = config.getUnSelectTextColorG();
                     int currentTextB = config.getUnSelectTextColorB();
                     int currentBgR = config.getUnSelectBgColorR();
                     int currentBgG = config.getUnSelectBgColorG();
                     int currentBgB = config.getUnSelectBgColorB();
-                    if (array.indexOfKey(secondVisibleViewIndex) >= 0
-                            && firstVisibleView.getBottom() <= config.getHeight()) {
-                        int endTextR = config.getSelectedTextColorR();
-                        int endTextG = config.getSelectedTextColorG();
-                        int endTextB = config.getSelectedTextColorB();
-                        int endBgR = config.getSelectedBgColorR();
-                        int endBgG = config.getSelectedBgColorG();
-                        int endBgB = config.getSelectedBgColorB();
-                        float percent = 1f * (config.getHeight() - firstVisibleView.getBottom()) / config.getHeight();
-                        // text
-                        currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
-                        currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
-                        currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
-                        // bg
-                        currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
-                        currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
-                        currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
-                    }
+
+                    int endTextR = config.getSelectedTextColorR();
+                    int endTextG = config.getSelectedTextColorG();
+                    int endTextB = config.getSelectedTextColorB();
+                    int endBgR = config.getSelectedBgColorR();
+                    int endBgG = config.getSelectedBgColorG();
+                    int endBgB = config.getSelectedBgColorB();
+                    float percent = 1f * (config.getHeight() - firstVisibleView.getBottom()) / config.getHeight();
+                    // text
+                    currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
+                    currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
+                    currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
+                    // bg
+                    currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
+                    currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
+                    currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
                     bgColor = Color.rgb(currentBgR, currentBgG, currentBgB);
                     textColor = Color.rgb(currentTextR, currentTextG, currentTextB);
                 }
 
                 paint.setColor(bgColor);
-                c.drawRect(secondVisibleView.getLeft(), secondVisibleView.getTop() - config.getHeight(),
-                        secondVisibleView.getRight(), secondVisibleView.getTop(), paint);
+                c.drawRect(child.getLeft(), child.getTop() - config.getHeight(), child.getRight(), child.getTop(), paint);
                 paint.setColor(textColor);
                 c.drawText(tmp, xOffset, yOffset, paint);
             }
