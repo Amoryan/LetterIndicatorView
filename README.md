@@ -21,6 +21,30 @@
 13. livZoomUpIndicatorMargin放大部分和指示器之间的距离；
 14. livHeaderDrawable是否有列表头，列表头对应图标。
 
+```xml
+<com.fxyan.widget.LetterIndicatorView
+    android:id="@+id/indicatorView"
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+    app:layout_constraintRight_toRightOf="@+id/recyclerView"
+    app:layout_constraintTop_toTopOf="@+id/recyclerView"
+    app:livHeaderDrawable="@mipmap/ic_search"
+    app:livIndicatorBgColor="@android:color/transparent"
+    app:livIndicatorItemHeight="15dp"
+    app:livIndicatorItemWidth="20dp"
+    app:livIndicatorSelectedBgColor="#43c561"
+    app:livIndicatorSelectedBgRadius="8dp"
+    app:livIndicatorSelectedTextColor="@android:color/white"
+    app:livIndicatorTextSize="10sp"
+    app:livIndicatorUnSelectTextColor="#646464"
+    app:livZoomUpIndicatorBgColor="#20000000"
+    app:livZoomUpIndicatorBgRadius="20dp"
+    app:livZoomUpIndicatorMargin="5dp"
+    app:livZoomUpIndicatorTextColor="@android:color/white"
+    app:livZoomUpIndicatorTextSize="20sp" />
+```
+
 ## 回调监听
 可以给LetterIndicatorView设置OnIndicatorIndexChangeListener，index的取值范围大于等于-1。
 ```java
