@@ -1,3 +1,7 @@
+# 使用方法
+```gradle
+implementation 'com.fxyan.widget:letterIndicatorView:1.0.0'
+```
 # 示例
 ## 微信通讯录
 效果图如下
