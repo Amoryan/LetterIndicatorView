@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 
+import com.fxyan.decoration.DecorationConfig;
 import com.fxyan.widget.LetterIndicatorView;
 
 import java.util.ArrayList;
@@ -29,28 +30,19 @@ public class MainActivity extends AppCompatActivity {
         final LinearLayoutManager lm = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(lm);
         final SparseArray<String> array = new SparseArray<>();
-        ItemDecoration itemDecoration = new ItemDecoration(this, array);
-        recyclerView.addItemDecoration(itemDecoration);
+        DecorationConfig config = new DecorationConfig.Builder()
+                .setSelectedTextColor(0x1b, 0x8f, 0xe6)
+                .setUnSelectTextColor(0x64, 0x64, 0x64)
+                .setSelectedBgColor(0xff, 0xff, 0xff)
+                .setUnSelectBgColor(0xf5, 0xf5, 0xf5)
+                .setTextXOffset(Tools.dp2px(this, 12))
+                .setTextSize(Tools.dp2px(this, 14))
+                .setHeight((int) Tools.dp2px(this, 30))
+                .build();
+        indicatorView.attachToRecyclerView(recyclerView, config, array);
         Adapter adapter = new Adapter(this);
         adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.listheader, recyclerView, false));
         recyclerView.setAdapter(adapter);
-
-        indicatorView.setOnIndicatorIndexChangeListener(new LetterIndicatorView.OnIndicatorIndexChangeListener() {
-            @Override
-            public void onIndicatorIndexChanged(int index) {
-                if (index >= 0) {
-                    lm.scrollToPositionWithOffset(array.keyAt(index), 0);
-                } else if (index == -1) {
-                    lm.scrollToPositionWithOffset(0, 0);
-                }
-            }
-        });
-        itemDecoration.setOnTitleIndexChangeListener(new ItemDecoration.OnTitleIndexChangeListener() {
-            @Override
-            public void onTitleIndexChanged(int index) {
-                indicatorView.setOutChangeIndex(index);
-            }
-        });
 
         adapter.dataSource.clear();
         ArrayList<String> titles = new ArrayList<>();

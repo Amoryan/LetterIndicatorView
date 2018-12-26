@@ -10,13 +10,18 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.fxyan.decoration.Decoration;
+import com.fxyan.decoration.DecorationConfig;
 
 import java.util.ArrayList;
 
@@ -168,7 +173,28 @@ public final class LetterIndicatorView extends View {
         onIndicatorIndexChangeListener = listener;
     }
 
-    public void attachToRecyclerView(RecyclerView recyclerView) {
+    public void attachToRecyclerView(RecyclerView recyclerView, DecorationConfig config, SparseArray<String> array) {
+        final Decoration decoration = new Decoration(config, array);
+        recyclerView.addItemDecoration(decoration);
+        final LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+        decoration.setOnTitleIndexChangeListener(new Decoration.OnTitleIndexChangeListener() {
+            @Override
+            public void onTitleIndexChanged(int index) {
+                setOutChangeIndex(index);
+            }
+        });
+        setOnIndicatorIndexChangeListener(new LetterIndicatorView.OnIndicatorIndexChangeListener() {
+            @Override
+            public void onIndicatorIndexChanged(int index) {
+                if (index >= 0) {
+                    if (llm != null)
+                        llm.scrollToPositionWithOffset(decoration.keyAt(index), 0);
+                } else if (index == -1) {
+                    if (llm != null)
+                        llm.scrollToPositionWithOffset(0, 0);
+                }
+            }
+        });
     }
 
     @Override
