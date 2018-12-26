@@ -59,7 +59,7 @@ public final class WeChatContactActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new WeChatItemDecoration(this, array));
         DecorationConfig config = new DecorationConfig.Builder()
                 .setLine(1, Color.parseColor("#ebebeb"))
-                .setSelectedTextColor(0x33, 0x33, 0x33)
+                .setSelectedTextColor(0x43, 0xc5, 0x61)
                 .setUnSelectTextColor(0x64, 0x64, 0x64)
                 .setSelectedBgColor(0xff, 0xff, 0xff)
                 .setUnSelectBgColor(0xf8, 0xf9, 0xfa)
