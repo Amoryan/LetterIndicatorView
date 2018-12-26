@@ -241,12 +241,12 @@ public final class LetterIndicatorView extends View {
         outChangeIndex = onTouchIndex;
 
         zoomUpIndicatorCenterY = y;
-        if (zoomUpIndicatorCenterY < firstItemTop + indicatorItemHeight / 2) {
-            zoomUpIndicatorCenterY = firstItemTop + indicatorItemHeight / 2;
+        if (zoomUpIndicatorCenterY < firstItemTop) {
+            zoomUpIndicatorCenterY = firstItemTop;
         }
         float lastItemBottom = firstItemTop + getTotalItemHeight();
-        if (zoomUpIndicatorCenterY > lastItemBottom - indicatorItemHeight / 2) {
-            zoomUpIndicatorCenterY = lastItemBottom - indicatorItemHeight / 2;
+        if (zoomUpIndicatorCenterY > lastItemBottom) {
+            zoomUpIndicatorCenterY = lastItemBottom;
         }
     }
 

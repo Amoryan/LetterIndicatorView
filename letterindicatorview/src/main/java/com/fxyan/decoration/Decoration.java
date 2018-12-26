@@ -83,8 +83,12 @@ public final class Decoration extends RecyclerView.ItemDecoration {
                     textColor = Color.rgb(currentTextR, currentTextG, currentTextB);
                 }
 
+                paint.setColor(Color.parseColor("#ebebeb"));
+                c.drawLine(0, child.getTop() - config.getHeight(), child.getRight(), child.getTop() - config.getHeight() + 1, paint);
                 paint.setColor(bgColor);
-                c.drawRect(child.getLeft(), child.getTop() - config.getHeight(), child.getRight(), child.getTop(), paint);
+                c.drawRect(0, child.getTop() - config.getHeight() + 1, child.getRight(), child.getTop() - 1, paint);
+                paint.setColor(Color.parseColor("#ebebeb"));
+                c.drawLine(0, child.getTop() - 1, child.getRight(), child.getTop(), paint);
                 paint.setColor(textColor);
                 c.drawText(tmp, xOffset, yOffset, paint);
             }
@@ -143,8 +147,12 @@ public final class Decoration extends RecyclerView.ItemDecoration {
                 currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
                 currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
             }
+            paint.setColor(Color.parseColor("#ebebeb"));
+            c.drawLine(0, top, parent.getWidth(), top + 1, paint);
             paint.setColor(Color.rgb(currentBgR, currentBgG, currentBgB));
-            c.drawRect(0, top, parent.getWidth(), top + config.getHeight(), paint);
+            c.drawRect(0, top + 1, parent.getWidth(), top + config.getHeight() - 1, paint);
+            paint.setColor(Color.parseColor("#ebebeb"));
+            c.drawLine(0, top + config.getHeight() - 1, parent.getWidth(), top + config.getHeight(), paint);
             float xOffset = config.getTextXOffset();
             float yOffset = top + config.getHeight() / 2 - (fontMetrics.bottom + fontMetrics.top) / 2;
 

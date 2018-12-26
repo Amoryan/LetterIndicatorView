@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <FrameLayout
+        android:id="@+id/newFriendFl"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape_bg_new_friend"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/ic_new_friend" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/newFriendTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="新的朋友"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/newFriendFl"
+        app:layout_constraintLeft_toRightOf="@+id/newFriendFl"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/newFriendFl" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginTop="6dp"
+        android:background="#ebebeb"
+        app:layout_constraintLeft_toLeftOf="@+id/newFriendTv"
+        app:layout_constraintRight_toRightOf="@+id/newFriendTv"
+        app:layout_constraintTop_toBottomOf="@+id/newFriendFl" />
+
+    <FrameLayout
+        android:id="@+id/teamChatFl"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/shape_bg_team_chat"
+        app:layout_constraintLeft_toLeftOf="@+id/newFriendFl"
+        app:layout_constraintTop_toBottomOf="@+id/line1">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/ic_team_chat" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/teamChatTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="群聊"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/teamChatFl"
+        app:layout_constraintLeft_toRightOf="@+id/teamChatFl"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/teamChatFl" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginTop="6dp"
+        android:background="#ebebeb"
+        app:layout_constraintLeft_toLeftOf="@+id/teamChatTv"
+        app:layout_constraintRight_toRightOf="@+id/teamChatTv"
+        app:layout_constraintTop_toBottomOf="@+id/teamChatFl" />
+
+    <FrameLayout
+        android:id="@+id/tagFl"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/shape_bg_public"
+        app:layout_constraintLeft_toLeftOf="@+id/newFriendFl"
+        app:layout_constraintTop_toBottomOf="@+id/line2">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/ic_tag" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tagTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="标签"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tagFl"
+        app:layout_constraintLeft_toRightOf="@+id/tagFl"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tagFl" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="0dp"
+        android:layout_height="1px"
+        android:layout_marginTop="6dp"
+        android:background="#ebebeb"
+        app:layout_constraintLeft_toLeftOf="@+id/tagTv"
+        app:layout_constraintRight_toRightOf="@+id/tagTv"
+        app:layout_constraintTop_toBottomOf="@+id/tagFl" />
+
+    <FrameLayout
+        android:id="@+id/publicFl"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/shape_bg_public"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/newFriendFl"
+        app:layout_constraintTop_toBottomOf="@+id/line3">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@mipmap/ic_public" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/publicTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="新的朋友"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/publicFl"
+        app:layout_constraintLeft_toRightOf="@+id/publicFl"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/publicFl" />
+
+</android.support.constraint.ConstraintLayout>

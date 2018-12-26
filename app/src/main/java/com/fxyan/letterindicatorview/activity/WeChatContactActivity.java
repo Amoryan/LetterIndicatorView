@@ -7,13 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.fxyan.decoration.DecorationConfig;
 import com.fxyan.letterindicatorview.R;
 import com.fxyan.letterindicatorview.Tools;
 import com.fxyan.letterindicatorview.adapter.WeChatAdapter;
-import com.fxyan.letterindicatorview.entity.WeChatContactRespBean;
+import com.fxyan.letterindicatorview.adapter.WechatItemDecoration;
 import com.fxyan.letterindicatorview.entity.WeChatContactItem;
+import com.fxyan.letterindicatorview.entity.WeChatContactRespBean;
 import com.fxyan.widget.LetterIndicatorView;
 import com.google.gson.Gson;
 
@@ -31,33 +34,45 @@ public final class WeChatContactActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LetterIndicatorView indicatorView;
+    WeChatAdapter adapter;
+    SparseArray<String> array;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wechat_contact);
 
-        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#f1f1f1"));
+        getWindow().getDecorView().setBackgroundColor(Color.parseColor("#f8f9fa"));
 
         recyclerView = findViewById(R.id.recyclerView);
         indicatorView = findViewById(R.id.indicatorView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        WeChatAdapter adapter = new WeChatAdapter(this);
+        adapter = new WeChatAdapter(this);
+        View header = LayoutInflater.from(this).inflate(R.layout.listheader_wechat_search, recyclerView, false);
+        adapter.addHeaderView(header);
+        header = LayoutInflater.from(this).inflate(R.layout.listheader_wechat_contact, recyclerView, false);
+        adapter.addHeaderView(header);
         recyclerView.setAdapter(adapter);
 
-        SparseArray<String> array = new SparseArray<>();
+        array = new SparseArray<>();
+        recyclerView.addItemDecoration(new WechatItemDecoration(this, array));
         DecorationConfig config = new DecorationConfig.Builder()
                 .setSelectedTextColor(0x43, 0xc5, 0x61)
                 .setUnSelectTextColor(0x64, 0x64, 0x64)
                 .setSelectedBgColor(0xff, 0xff, 0xff)
-                .setUnSelectBgColor(0xf1, 0xf1, 0xf1)
+                .setUnSelectBgColor(0xf8, 0xf9, 0xfa)
                 .setTextXOffset(Tools.dp2px(this, 12))
                 .setTextSize(Tools.dp2px(this, 14))
                 .setHeight((int) Tools.dp2px(this, 30))
                 .build();
+
         indicatorView.attachToRecyclerView(recyclerView, config, array);
 
+        parseData();
+    }
+
+    private void parseData() {
         adapter.getDataSource().clear();
         ArrayList<String> titles = new ArrayList<>();
         Map<String, List<WeChatContactItem>> testData = getTestData();
