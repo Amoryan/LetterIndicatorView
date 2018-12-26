@@ -52,34 +52,42 @@ public final class Decoration extends RecyclerView.ItemDecoration {
                 View firstVisibleView = parent.getChildAt(0);
                 View secondVisibleView = parent.getChildAt(1);
                 int secondVisibleViewIndex = parent.getChildAdapterPosition(secondVisibleView);
-                int currentTextR = config.getUnSelectTextColorR();
-                int currentTextG = config.getUnSelectTextColorG();
-                int currentTextB = config.getUnSelectTextColorB();
-                int currentBgR = config.getUnSelectBgColorR();
-                int currentBgG = config.getUnSelectBgColorG();
-                int currentBgB = config.getUnSelectBgColorB();
-                if (array.indexOfKey(secondVisibleViewIndex) >= 0
-                        && firstVisibleView.getBottom() <= config.getHeight()) {
-                    int endTextR = config.getSelectedTextColorR();
-                    int endTextG = config.getSelectedTextColorG();
-                    int endTextB = config.getSelectedTextColorB();
-                    int endBgR = config.getSelectedBgColorR();
-                    int endBgG = config.getSelectedBgColorG();
-                    int endBgB = config.getSelectedBgColorB();
-                    float percent = (config.getHeight() - firstVisibleView.getBottom()) / config.getHeight();
-                    // text
-                    currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
-                    currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
-                    currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
-                    // bg
-                    currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
-                    currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
-                    currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
+
+                int bgColor = Color.rgb(config.getUnSelectTextColorR(), config.getUnSelectTextColorG(), config.getUnSelectTextColorB());
+                int textColor = Color.rgb(config.getUnSelectTextColorR(), config.getUnSelectTextColorG(), config.getUnSelectTextColorB());
+                if (secondVisibleViewIndex == position) {
+                    int currentTextR = config.getUnSelectTextColorR();
+                    int currentTextG = config.getUnSelectTextColorG();
+                    int currentTextB = config.getUnSelectTextColorB();
+                    int currentBgR = config.getUnSelectBgColorR();
+                    int currentBgG = config.getUnSelectBgColorG();
+                    int currentBgB = config.getUnSelectBgColorB();
+                    if (array.indexOfKey(secondVisibleViewIndex) >= 0
+                            && firstVisibleView.getBottom() <= config.getHeight()) {
+                        int endTextR = config.getSelectedTextColorR();
+                        int endTextG = config.getSelectedTextColorG();
+                        int endTextB = config.getSelectedTextColorB();
+                        int endBgR = config.getSelectedBgColorR();
+                        int endBgG = config.getSelectedBgColorG();
+                        int endBgB = config.getSelectedBgColorB();
+                        float percent = 1f * (config.getHeight() - firstVisibleView.getBottom()) / config.getHeight();
+                        // text
+                        currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
+                        currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
+                        currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
+                        // bg
+                        currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
+                        currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
+                        currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
+                    }
+                    bgColor = Color.rgb(currentBgR, currentBgG, currentBgB);
+                    textColor = Color.rgb(currentTextR, currentTextG, currentTextB);
                 }
-                paint.setColor(Color.rgb(currentBgR, currentBgG, currentBgB));
-                c.drawRect(firstVisibleView.getLeft(), firstVisibleView.getTop(), firstVisibleView.getRight(),
-                        firstVisibleView.getBottom(), paint);
-                paint.setColor(Color.rgb(currentTextR, currentTextG, currentTextB));
+
+                paint.setColor(bgColor);
+                c.drawRect(secondVisibleView.getLeft(), secondVisibleView.getTop() - config.getHeight(),
+                        secondVisibleView.getRight(), secondVisibleView.getTop(), paint);
+                paint.setColor(textColor);
                 c.drawText(tmp, xOffset, yOffset, paint);
             }
         }
@@ -120,22 +128,22 @@ public final class Decoration extends RecyclerView.ItemDecoration {
                 // 第一个可见的控件是该组最后一个控件
                 top = firstVisibleView.getBottom() - config.getHeight();
                 // text
-                int endTextColorR = config.getUnSelectTextColorR();
-                int endTextColorG = config.getUnSelectTextColorG();
-                int endTextColorB = config.getUnSelectTextColorB();
+                int endTextR = config.getUnSelectTextColorR();
+                int endTextG = config.getUnSelectTextColorG();
+                int endTextB = config.getUnSelectTextColorB();
                 // bg
-                int endBgColorR = config.getUnSelectBgColorR();
-                int endBgColorG = config.getUnSelectBgColorG();
-                int endBgColorB = config.getUnSelectBgColorB();
+                int endBgR = config.getUnSelectBgColorR();
+                int endBgG = config.getUnSelectBgColorG();
+                int endBgB = config.getUnSelectBgColorB();
 
-                float percent = Math.abs(top) / config.getHeight();
+                float percent = 1f * Math.abs(top) / config.getHeight();
 
-                currentTextR = (int) (currentTextR - (currentTextR - endTextColorR) * percent);
-                currentTextG = (int) (currentTextG - (currentTextG - endTextColorG) * percent);
-                currentTextB = (int) (currentTextB - (currentTextB - endTextColorB) * percent);
-                currentBgR = (int) (currentBgR - (currentBgR - endBgColorR) * percent);
-                currentBgG = (int) (currentBgG - (currentBgG - endBgColorG) * percent);
-                currentBgB = (int) (currentBgB - (currentBgB - endBgColorB) * percent);
+                currentTextR = (int) (currentTextR + (endTextR - currentTextR) * percent);
+                currentTextG = (int) (currentTextG + (endTextG - currentTextG) * percent);
+                currentTextB = (int) (currentTextB + (endTextB - currentTextB) * percent);
+                currentBgR = (int) (currentBgR + (endBgR - currentBgR) * percent);
+                currentBgG = (int) (currentBgG + (endBgG - currentBgG) * percent);
+                currentBgB = (int) (currentBgB + (endBgB - currentBgB) * percent);
             }
             paint.setColor(Color.rgb(currentBgR, currentBgG, currentBgB));
             c.drawRect(0, top, parent.getWidth(), top + config.getHeight(), paint);

@@ -1,4 +1,4 @@
-package com.fxyan.letterindicatorview;
+package com.fxyan.letterindicatorview.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -47,6 +47,10 @@ public abstract class BaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
         this.dataSource = new ArrayList<>();
         this.headers = new SparseArray<>();
         this.footers = new SparseArray<>();
+    }
+
+    public List<T> getDataSource() {
+        return dataSource;
     }
 
     public void clearDataSource() {

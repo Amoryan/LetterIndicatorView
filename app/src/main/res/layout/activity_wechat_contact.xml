@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/titleFl"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="通讯录"
+            android:textColor="#333333"
+            android:textSize="18sp" />
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleFl" />
+
+    <com.fxyan.widget.LetterIndicatorView
+        android:id="@+id/indicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintRight_toRightOf="@+id/recyclerView"
+        app:layout_constraintTop_toTopOf="@+id/recyclerView"
+        app:livHeaderDrawable="@mipmap/ic_search"
+        app:livIndicatorBgColor="@android:color/transparent"
+        app:livIndicatorItemHeight="15dp"
+        app:livIndicatorItemWidth="20dp"
+        app:livIndicatorSelectedBgColor="#43c561"
+        app:livIndicatorSelectedBgRadius="8dp"
+        app:livIndicatorSelectedTextColor="@android:color/white"
+        app:livIndicatorTextSize="10sp"
+        app:livIndicatorUnSelectTextColor="#646464"
+        app:livZoomUpIndicatorBgColor="#20000000"
+        app:livZoomUpIndicatorBgRadius="20dp"
+        app:livZoomUpIndicatorMargin="5dp"
+        app:livZoomUpIndicatorTextColor="@android:color/white"
+        app:livZoomUpIndicatorTextSize="20sp" />
+
+</android.support.constraint.ConstraintLayout>

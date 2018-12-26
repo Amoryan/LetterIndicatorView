@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fxyan.letterindicatorview.adapter.BaseRecyclerAdapter;
+
 /**
  * @author fxYan
  */
