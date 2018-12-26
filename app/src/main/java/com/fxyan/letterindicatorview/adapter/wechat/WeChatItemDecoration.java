@@ -37,7 +37,7 @@ public final class WeChatItemDecoration extends RecyclerView.ItemDecoration {
             int itemViewType = parent.getAdapter().getItemViewType(childAdapterPosition);
             if (itemViewType == BaseRecyclerAdapter.ITEM_TYPE
                     && array.indexOfKey(childAdapterPosition) < 0) {
-                c.drawRect(dp64, child.getBottom(), child.getRight(), child.getBottom() + 1, paint);
+                c.drawRect(dp64, child.getTop(), child.getRight(), child.getTop() - 1, paint);
             }
         }
     }

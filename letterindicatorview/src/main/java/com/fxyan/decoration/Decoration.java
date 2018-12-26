@@ -85,9 +85,9 @@ public final class Decoration extends RecyclerView.ItemDecoration {
 
                 if (config.getLineHeight() > 0) {
                     paint.setColor(config.getLineColor());
-                    c.drawLine(0, child.getTop() - config.getHeight(), child.getRight(), child.getTop() - config.getHeight() + config.getLineHeight(), paint);
+                    c.drawRect(0, child.getTop() - config.getHeight(), child.getRight(), child.getTop() - config.getHeight() + config.getLineHeight(), paint);
                     paint.setColor(config.getLineColor());
-                    c.drawLine(0, child.getTop() - config.getLineHeight(), child.getRight(), child.getTop(), paint);
+                    c.drawRect(0, child.getTop() - config.getLineHeight(), child.getRight(), child.getTop(), paint);
                 }
                 paint.setColor(bgColor);
                 c.drawRect(0, child.getTop() - config.getHeight() + config.getLineHeight(), child.getRight(), child.getTop() - config.getLineHeight(), paint);
@@ -151,9 +151,9 @@ public final class Decoration extends RecyclerView.ItemDecoration {
             }
             if (config.getLineHeight() > 0) {
                 paint.setColor(config.getLineColor());
-                c.drawLine(0, top, parent.getWidth(), top + config.getLineHeight(), paint);
+                c.drawRect(0, top, parent.getWidth(), top + config.getLineHeight(), paint);
                 paint.setColor(config.getLineColor());
-                c.drawLine(0, top + config.getHeight() - config.getLineHeight(), parent.getWidth(), top + config.getHeight(), paint);
+                c.drawRect(0, top + config.getHeight() - config.getLineHeight(), parent.getWidth(), top + config.getHeight(), paint);
             }
             paint.setColor(Color.rgb(currentBgR, currentBgG, currentBgB));
             c.drawRect(0, top + config.getLineHeight(), parent.getWidth(), top + config.getHeight() - config.getLineHeight(), paint);
