@@ -1,1 +1,1 @@
-include ':app', ':letterindicatorview'
+include ':app', ':letterIndicatorView'
