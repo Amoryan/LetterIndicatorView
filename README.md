@@ -1,6 +1,7 @@
 # 使用方法
+请使用1.0.1
 ```gradle
-implementation 'com.fxyan.widget:letterIndicatorView:1.0.0'
+implementation 'com.fxyan.widget:letterIndicatorView:1.0.1'
 ```
 # 示例
 ## 微信通讯录
@@ -82,7 +83,7 @@ indicatorView.attachToRecyclerView(recyclerView, config, array);
 5. selectedBgColor，当前分组的背景色，通过setSelectedBgColor()设置；
 6. unSelectBgColor，其他分组的文本颜色，通过setUnSelectBgColor设置；
 7. textSize，文本大小，通过setTextSize()设置；
-8. textXOffset，文本x轴偏移量，通过setTextSize()设置；
+8. textXOffset，文本x轴偏移量，通过setTextXOffset()设置；
 9. height，分组高度，通过setHeight()设置。
 ### 自定义ItemDecoration
 如果自带的Decoration不支持需求，可以自己编写Decoration
