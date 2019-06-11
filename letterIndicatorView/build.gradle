@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/Amoryan/LetterIndicatorView'
     gitUrl = 'https://github.com/Amoryan/LetterIndicatorView.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'fxyan'
     developerName = 'YanFangxiong'
